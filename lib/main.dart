@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'answer.dart';
-import 'question.dart';
+import 'quiz.dart';
+import 'result.dart';
 
 void main() => runApp(MyApp());
 
@@ -27,38 +27,31 @@ class _MyAppState extends State<MyApp> {
       "answers": ["Max", "Max", "Max", "Max", "Max"],
     }
   ];
+
   var _questionIndex = 0;
 
   void _answerQuestion() {
-    if (_questionIndex < _questions.length - 1) {
-      setState(() {
-        _questionIndex += 1;
-      });
-    }
+    setState(() {
+      _questionIndex = _questionIndex + 1;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final Question question =
-        Question(_questions[_questionIndex]["questionText"]);
-
-    final List<Answer> answers =
-        (_questions[_questionIndex]["answers"] as List<String>)
-            .map((answerText) {
-      return Answer(answerText, _answerQuestion);
-    }).toList();
-
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: Text("Super Flutter app"),
         ),
-        body: Column(
-          children: [
-            question,
-            ...answers,
-          ],
-        ),
+        body: _questionIndex < _questions.length
+            ? Column(children: [
+                Quiz(
+                  questions: _questions,
+                  questionIndex: _questionIndex,
+                  onClick: _answerQuestion,
+                ),
+              ])
+            : Result(),
       ),
     );
   }
